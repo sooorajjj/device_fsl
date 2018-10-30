@@ -1,9 +1,11 @@
 /dev/pmem_gpu             0660   system     graphics
-/dev/ttymxc2              0660   bluetooth  net_bt_stack
-/dev/ttymxc4              0660   bluetooth  net_bt_stack
+/dev/ttymxc*              0666   system     system
+/dev/ttymxc0              0660   bluetooth  net_bt_stack
+/dev/ttymxc1              0660   system  	gps
+/dev/hci_tty              0660   bluetooth  net_bt_stack
 /dev/snd/*                0660   system     audio
-/dev/ttyUSB*              0640   radio      radio
-/dev/ttyACM*              0640   radio      radio
+/dev/ttyUSB*              0660   radio      radio
+/dev/ttyACM*              0660   radio      radio
 /dev/video*               0660   system     camera
 /dev/video0               0660   system     camera
 /dev/video1               0660   system     camera
@@ -21,6 +23,7 @@
 /dev/mma8x5x              0640   compass     system
 /dev/caam_kb              0660   system     system
 /dev/block/mmcblk*p9      0600   system     system
+/dev/gpsdevice            0660   system  	gps
 
 # sysfs properties
 /sys/devices/virtual/input/input*   name        0660  root   input
@@ -37,6 +40,37 @@
 
 /sys/devices/platform/mxsdhci.2/mmc_host/mmc0/mmc0:000* boot_bus_config 0660 root root
 /sys/devices/platform/mxsdhci.2/mmc_host/mmc0/mmc0:000* boot_config 0660 root root
+
+#common iio char devices
+/dev/iio:device* 0666 system system
+
+#common sensors files
+/sys/devices/iio:device* buffer/enable 0666 system system
+/sys/devices/iio:device* buffer/length 0666 system system
+/sys/devices/iio:device* sampling_frequency 0666 system system
+/sys/devices/iio:device* scan_elements/in_timestamp_en 0666 system system
+/sys/devices/iio:device* hwfifo_flush 0666 system system
+/sys/devices/iio:device* hwfifo_enabled 0666 system system
+/sys/devices/iio:device* hwfifo_watermark 0666 system system
+/sys/devices/iio:device* injection_mode 0666 system system
+
+#accelerometer sensor
+/sys/devices/iio:device* scan_elements/in_accel_x_en 0666 system system
+/sys/devices/iio:device* scan_elements/in_accel_y_en 0666 system system
+/sys/devices/iio:device* scan_elements/in_accel_z_en 0666 system system
+/sys/devices/iio:device* in_accel_x_scale 0666 system system
+/sys/devices/iio:device* in_accel_y_scale 0666 system system
+/sys/devices/iio:device* in_accel_z_scale 0666 system system
+/sys/devices/iio:device* in_accel_injection_raw 0666 system system
+
+#gyroscope sensor
+/sys/devices/iio:device* scan_elements/in_anglvel_x_en 0666 system system
+/sys/devices/iio:device* scan_elements/in_anglvel_y_en 0666 system system
+/sys/devices/iio:device* scan_elements/in_anglvel_z_en 0666 system system
+/sys/devices/iio:device* in_anglvel_x_scale 0666 system system
+/sys/devices/iio:device* in_anglvel_y_scale 0666 system system
+/sys/devices/iio:device* in_anglvel_z_scale 0666 system system
+
 # for sabresd
 /sys/devices/soc0/soc/2100000.aips-bus/21a8000.i2c/i2c-2/2-0044 mode 0660 system system
 /sys/devices/soc0/soc/2100000.aips-bus/21a8000.i2c/i2c-2/2-0044 lux 0660 system system

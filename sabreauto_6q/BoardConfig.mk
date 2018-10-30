@@ -9,6 +9,11 @@ include device/fsl/imx6/BoardConfigCommon.mk
 BUILD_TARGET_FS ?= ext4
 include device/fsl/imx6/imx6_target_fs.mk
 
+# In userdebug, Enable adb logs from first boot
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
+    include device/fsl/sabreauto_6q/debug.mk
+endif
+
 ifeq ($(BUILD_TARGET_FS),ubifs)
 TARGET_RECOVERY_FSTAB = device/fsl/sabreauto_6q/fstab_nand.freescale
 # build ubifs for nand devices
@@ -36,7 +41,7 @@ endif # BUILD_TARGET_FS
 
 TARGET_BOOTLOADER_BOARD_NAME := SABREAUTO
 
-PRODUCT_MODEL := SABREAUTO-MX6Q
+PRODUCT_MODEL := Bluemoon
 
 TARGET_BOOTLOADER_POSTFIX := imx
 TARGET_DTB_POSTFIX := -dtb
@@ -46,10 +51,10 @@ TARGET_CPU_SMP := true
 
 TARGET_RELEASETOOLS_EXTENSIONS := device/fsl/imx6
 # UNITE is a virtual device.
-BOARD_WLAN_DEVICE            := UNITE
-WPA_SUPPLICANT_VERSION       := VER_0_8_UNITE
-BOARD_WPA_SUPPLICANT_DRIVER  := NL80211
-BOARD_HOSTAPD_DRIVER         := NL80211
+# BOARD_WLAN_DEVICE            := UNITE
+# WPA_SUPPLICANT_VERSION       := VER_0_8_UNITE
+# BOARD_WPA_SUPPLICANT_DRIVER  := NL80211
+# BOARD_HOSTAPD_DRIVER         := NL80211
 
 #for intel vendor
 ifeq ($(BOARD_WLAN_VENDOR),INTEL)
@@ -63,15 +68,48 @@ WIFI_DRIVER_MODULE_NAME                  := "iwlagn"
 WIFI_DRIVER_MODULE_PATH                  ?= auto
 endif
 
+# Connectivity - Wi-Fi
+USES_TI_MAC80211 := true
+ifeq ($(USES_TI_MAC80211),true)
+BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+WPA_SUPPLICANT_VERSION      := VER_0_8_X
+BOARD_HOSTAPD_DRIVER        := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB  := lib_driver_cmd_wl12xx
+BOARD_HOSTAPD_PRIVATE_LIB         := lib_driver_cmd_wl12xx
+BOARD_WLAN_DEVICE           := wl12xx_mac80211
+BOARD_SOFTAP_DEVICE         := wl12xx_mac80211
+COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
+COMMON_GLOBAL_CFLAGS += -DANDROID_P2P_STUB
+endif
+
+# TARGET_OUT_MODULES_DIR := $(OUT)/system/lib/modules/
+
+# TARGET_KERNEL_MODULES += $(shell mkdir -p $(OUT)/system/lib) \
+#     $(shell mkdir -p $(OUT)/system/lib/modules) \
+#     $(shell cp -rf kernel_imx/net/mac80211/mac80211.ko $(TARGET_OUT_MODULES_DIR)) \
+#     $(shell cp -rf kernel_imx/net/wireless/cfg80211.ko $(TARGET_OUT_MODULES_DIR)) \
+#     $(shell cp -rf kernel_imx/drivers/net/wireless/ti/wl18xx/wl18xx.ko $(TARGET_OUT_MODULES_DIR)) \
+#     $(shell cp -rf kernel_imx/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko $(TARGET_OUT_MODULES_DIR)) \
+#     $(shell cp -rf kernel_imx/drivers/net/wireless/ti/wlcore/wlcore.ko $(TARGET_OUT_MODULES_DIR)) \
+#     $(shell cp -rf kernel_imx/drivers/net/wireless/ti/wl18xx/wl12xx.ko $(TARGET_OUT_MODULES_DIR))
+
+# TARGET_KERNEL_MODULES += WLAN_MODULES
+
+BOARD_HAVE_BLUETOOTH_TI := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/fsl/sabreauto_6q/bluetooth
+
+
 BOARD_MODEM_VENDOR := AMAZON
 
-USE_ATHR_GPS_HARDWARE := false
+BOARD_HAVE_HARDWARE_GPS := true
+USE_ATHR_GPS_HARDWARE := true
 USE_QEMU_GPS_HARDWARE := false
 
 PHONE_MODULE_INCLUDE := flase
-#for accelerator sensor, need to define sensor type here
-BOARD_HAS_SENSOR := true
-SENSOR_MMA8451 := true
+# for accelerometer and gyroscope
+USE_IIO_SENSOR_HAL := true
+NO_IIO_EVENTS := true
+# USE_IIO_ACTIVITY_RECOGNITION_HAL := true
 
 # for recovery service
 TARGET_SELECT_KEY := 28
@@ -90,7 +128,12 @@ USE_GPU_ALLOCATOR := true
 # define frame buffer count
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
-BOARD_KERNEL_CMDLINE := console=ttymxc3,115200 init=/init video=mxcfb0:dev=ldb,fbpix=RGB32,bpp=32 video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off vmalloc=128M androidboot.console=ttymxc3 consoleblank=0 androidboot.hardware=freescale cma=512M galcore.contiguousSize=201326592
+#LVDS
+BOARD_KERNEL_CMDLINE := console=ttymxc3,115200 init=/init video=mxcfb0:dev=ldb,if=RGB24,fbpix=RGB32, bpp=32 video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off vmalloc=128M androidboot.console=ttymxc3 consoleblank=0 androidboot.hardware=freescale cma=512M galcore.contiguousSize=201326592
+#HDMI
+#BOARD_KERNEL_CMDLINE := console=ttymxc3,115200 androidboot.console=ttymxc3 consoleblank=0 vmalloc=128M init=/init video=mxcfb0:dev=hdmi,1920x1080M@60,bpp=32 video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off androidboot.hardware=freescale cma=512M galcore.contiguousSize=201326592
+# A Few Security features Disabled
+BOARD_KERNEL_CMDLINE +=  androidboot.selinux=permissive androidboot.dm_verity=disable
 
 ifeq ($(TARGET_USERIMAGES_USE_UBIFS),true)
 #UBI boot command line.

@@ -24,6 +24,7 @@
 # components.
 
 ifeq ($(TARGET_BOARD_PLATFORM),$(filter $(TARGET_BOARD_PLATFORM),imx6 imx7))
+ifeq ($(BOARD_WLAN_DEVICE),UNITE)
 
 LOCAL_PATH := $(call my-dir)
 
@@ -52,5 +53,5 @@ LOCAL_MODULE_PATH  := $(TARGET_OUT_ETC)/wifi
 include $(BUILD_PREBUILT)
 
 endif
-
+endif
 include $(call first-makefiles-under,$(LOCAL_PATH))

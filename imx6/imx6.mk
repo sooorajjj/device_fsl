@@ -51,38 +51,56 @@ PRODUCT_PACKAGES += \
 	p2p_supplicant_overlay.conf			\
 	wpa_supplicant_overlay.conf			\
     p2p_supplicant_advance_overlay.conf \
-	libion
+	libion \
+	hostapd \
+	dhcpcd.conf \
+	TQS_D_1.7.ini
 
 #FREESCALE_EXTENDED
 PRODUCT_PACKAGES += freescale-extended 		\
 		    freescale-extended.xml
 
-# Broadcom firmwares
+
+# gps related lib
+# ifeq ($(USE_ATHR_GPS_HARDWARE),true)
+PRODUCT_PACKAGES += \
+	gps.SABRESD				\
+	gps.ARM2				\
+	gps.SABREAUTO				\
+	Orion.ini 				\
+	AR1520A-Auto.img 			\
+	ingsvcd 				\
+	libOrionCtl.so 				\
+	OrionSys.so
+
+# endif
+
+# # Broadcom firmwares
 PRODUCT_PACKAGES += \
 	Type_ZP.hcd   	\
-	bt_vendor.conf	\
-	bcmdhd.cal		\
-	fw_bcmdhd.bin	\
-	fw_bcmdhd_apsta.bin
+	bt_vendor.conf
+# 	bcmdhd.cal		\
+# 	fw_bcmdhd.bin	\
+# 	fw_bcmdhd_apsta.bin
 
-# Broadcom BCM4339 extended binary
-PRODUCT_PACKAGES += \
-    bcmdhd.SN8000.OOB.cal     \
-    bcmdhd.SN8000.SDIO.cal    \
-    sn_fw_bcmdhd_apsta.bin    \
-    sn_fw_bcmdhd.bin          \
-    sn_fw_bcmdhd_mfgtest.bin  \
-    1bw_fw_bcmdhd.bin         \
-    1bw_fw_bcmdhd_mfgtest.bin \
-    BCM43341B0.1BW.hcd        \
-    bcmdhd.1BW.OOB.cal        \
-    bcmdhd.1BW.SDIO.cal       \
-    1dx_fw_bcmdhd.bin         \
-    1dx_fw_bcmdhd_mfgtest.bin \
-    BCM43430A1.1DX.hcd        \
-    bcmdhd.1DX.OOB.cal        \
-    bcmdhd.1DX.SDIO.cal       \
-    wl
+# # Broadcom BCM4339 extended binary
+# PRODUCT_PACKAGES += \
+#     bcmdhd.SN8000.OOB.cal     \
+#     bcmdhd.SN8000.SDIO.cal    \
+#     sn_fw_bcmdhd_apsta.bin    \
+#     sn_fw_bcmdhd.bin          \
+#     sn_fw_bcmdhd_mfgtest.bin  \
+#     1bw_fw_bcmdhd.bin         \
+#     1bw_fw_bcmdhd_mfgtest.bin \
+#     BCM43341B0.1BW.hcd        \
+#     bcmdhd.1BW.OOB.cal        \
+#     bcmdhd.1BW.SDIO.cal       \
+#     1dx_fw_bcmdhd.bin         \
+#     1dx_fw_bcmdhd_mfgtest.bin \
+#     BCM43430A1.1DX.hcd        \
+#     bcmdhd.1DX.OOB.cal        \
+#     bcmdhd.1DX.SDIO.cal       \
+#     wl
  
 # Debug utils
 PRODUCT_PACKAGES += \
@@ -92,7 +110,8 @@ PRODUCT_PACKAGES += \
 # Wifi AP mode
 PRODUCT_PACKAGES += \
 	hostapd					\
-	hostapd_cli
+	hostapd_cli \
+	dhcpcd
 
 #audio related lib
 PRODUCT_PACKAGES += \
@@ -121,7 +140,6 @@ PRODUCT_PACKAGES += \
 	power.imx6				\
 	audio.r_submix.default			\
 	libbt-vendor				\
-	libbt-vendor-broadcom		\
 	magd
 
 
@@ -141,7 +159,8 @@ PRODUCT_PACKAGES += \
 	libdrmframework_jni         		\
 	libdrmframework             		\
 	libdrmpassthruplugin        		\
-	libfwdlockengine            		\
+	libfwdlockengine 
+
 # power tool
 PRODUCT_PACKAGES += \
 	powerdebug
@@ -338,18 +357,18 @@ PRODUCT_COPY_FILES +=	\
     device/fsl-proprietary/media-profile/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     device/fsl-proprietary/media-profile/media_profiles_720p.xml:system/etc/media_profiles_720p.xml \
     
-PRODUCT_COPY_FILES += \
-	external/imx-firmware/brcm/ZP_BCM4339/BCM4335C0.ZP.hcd:system/etc/firmware/bcm/Type_ZP.hcd 	\
-	external/imx-firmware/brcm/ZP_BCM4339/fw_bcmdhd.bin:system/etc/firmware/bcm/fw_bcmdhd.bin 	\
-	external/imx-firmware/brcm/ZP_BCM4339/fw_bcmdhd.bin:system/etc/firmware/bcm/fw_bcmdhd_apsta.bin 	\
-	external/imx-firmware/brcm/1BW_BCM43340/BCM43341B0.1BW.hcd:system/etc/firmware/bcm/1BW_BCM43340/BCM43341B0.1BW.hcd 	\
-	external/imx-firmware/brcm/1BW_BCM43340/fw_bcmdhd.bin:system/etc/firmware/bcm/1BW_BCM43340/fw_bcmdhd.bin 	\
-	external/imx-firmware/brcm/1BW_BCM43340/fw_bcmdhd.bin:system/etc/firmware/bcm/1BW_BCM43340/fw_bcmdhd_apsta.bin 	\
-	external/imx-firmware/brcm/1DX_BCM4343W/BCM43430A1.1DX.hcd:system/etc/firmware/bcm/1DX_BCM4343W/BCM43430A1.1DX.hcd 	\
-	external/imx-firmware/brcm/1DX_BCM4343W/fw_bcmdhd.bin:system/etc/firmware/bcm/1DX_BCM4343W/fw_bcmdhd.bin 	\
-	external/imx-firmware/brcm/1DX_BCM4343W/fw_bcmdhd.bin:system/etc/firmware/bcm/1DX_BCM4343W/fw_bcmdhd_apsta.bin 	\
-	external/imx-firmware/brcm/SN8000_BCM43362/fw_bcmdhd.bin:system/etc/firmware/bcm/SN8000_BCM43362/fw_bcmdhd.bin 	\
-	external/imx-firmware/brcm/SN8000_BCM43362/fw_bcmdhd.bin:system/etc/firmware/bcm/SN8000_BCM43362/fw_bcmdhd_apsta.bin 	\
+# PRODUCT_COPY_FILES += \
+# 	external/imx-firmware/brcm/ZP_BCM4339/BCM4335C0.ZP.hcd:system/etc/firmware/bcm/Type_ZP.hcd 	\
+# 	external/imx-firmware/brcm/ZP_BCM4339/fw_bcmdhd.bin:system/etc/firmware/bcm/fw_bcmdhd.bin 	\
+# 	external/imx-firmware/brcm/ZP_BCM4339/fw_bcmdhd.bin:system/etc/firmware/bcm/fw_bcmdhd_apsta.bin 	\
+# 	external/imx-firmware/brcm/1BW_BCM43340/BCM43341B0.1BW.hcd:system/etc/firmware/bcm/1BW_BCM43340/BCM43341B0.1BW.hcd 	\
+# 	external/imx-firmware/brcm/1BW_BCM43340/fw_bcmdhd.bin:system/etc/firmware/bcm/1BW_BCM43340/fw_bcmdhd.bin 	\
+# 	external/imx-firmware/brcm/1BW_BCM43340/fw_bcmdhd.bin:system/etc/firmware/bcm/1BW_BCM43340/fw_bcmdhd_apsta.bin 	\
+# 	external/imx-firmware/brcm/1DX_BCM4343W/BCM43430A1.1DX.hcd:system/etc/firmware/bcm/1DX_BCM4343W/BCM43430A1.1DX.hcd 	\
+# 	external/imx-firmware/brcm/1DX_BCM4343W/fw_bcmdhd.bin:system/etc/firmware/bcm/1DX_BCM4343W/fw_bcmdhd.bin 	\
+# 	external/imx-firmware/brcm/1DX_BCM4343W/fw_bcmdhd.bin:system/etc/firmware/bcm/1DX_BCM4343W/fw_bcmdhd_apsta.bin 	\
+# 	external/imx-firmware/brcm/SN8000_BCM43362/fw_bcmdhd.bin:system/etc/firmware/bcm/SN8000_BCM43362/fw_bcmdhd.bin 	\
+# 	external/imx-firmware/brcm/SN8000_BCM43362/fw_bcmdhd.bin:system/etc/firmware/bcm/SN8000_BCM43362/fw_bcmdhd_apsta.bin 	\
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise

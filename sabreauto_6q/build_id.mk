@@ -19,4 +19,4 @@
 # capitalized by convention.
 
 export BUILD_ID=2.0.0-rfp-rc6
-export BUILD_NUMBER=20170930
+export BUILD_NUMBER=20180306

@@ -21,6 +21,9 @@ PRODUCT_COPY_FILES += \
 	device/fsl/sabreauto_6q/init.i.MX6Q.rc:root/init.freescale.i.MX6Q.rc \
 	device/fsl/sabreauto_6q/init.i.MX6DL.rc:root/init.freescale.i.MX6DL.rc \
 	device/fsl/sabreauto_6q/init.i.MX6QP.rc:root/init.freescale.i.MX6QP.rc \
+	device/fsl/common/bootanimation.zip:/system/media/bootanimation.zip \
+	device/common/gps/gps.conf_AS:system/etc/gps.conf
+
 
 # Audio
 USE_XML_AUDIO_POLICY_CONF := 1
@@ -53,9 +56,11 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.audio.output.xml:system/etc/permissions/android.hardware.audio.output.xml \
 	frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
+	frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.xml:system/etc/permissions/android.hardware.touchscreen.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
+	frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
 	frameworks/native/data/etc/android.hardware.screen.portrait.xml:system/etc/permissions/android.hardware.screen.portrait.xml \
 	frameworks/native/data/etc/android.hardware.screen.landscape.xml:system/etc/permissions/android.hardware.screen.landscape.xml \
 	frameworks/native/data/etc/android.software.app_widgets.xml:system/etc/permissions/android.software.app_widgets.xml \
@@ -73,7 +78,74 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml \
 	frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
 	frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
+	frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
 	device/fsl/sabreauto_6q/required_hardware.xml:system/etc/permissions/required_hardware.xml \
+
+
+PRODUCT_COPY_FILES += \
+	device/fsl/sabreauto_6q/init.crda.sh:system/etc/init.crda.sh \
+	device/fsl/sabreauto_6q/pins_post_boot.sh:system/etc/pins_post_boot.sh
+
+
+	# wl12xx driver currently broken due to kernel 4.1 patch to
+# support wl18xx R8.6_SP1
+# revert that patch to use wl12xx
+# please note that wl1271-nvs.bin is used also by wl18xx driver
+# to reset the MAC
+# wl12xx firmware
+PRODUCT_COPY_FILES +=	\
+	device/fsl/common/wl12xx/wl1271-nvs.bin:system/etc/firmware/ti-connectivity/wl1271-nvs.bin \
+	device/fsl/common/wl12xx/wl127x-fw-5-mr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-mr.bin \
+	device/fsl/common/wl12xx/wl127x-fw-5-plt.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-plt.bin \
+	device/fsl/common/wl12xx/wl127x-fw-5-sr.bin:system/etc/firmware/ti-connectivity/wl127x-fw-5-sr.bin \
+	device/fsl/common/wl12xx/TIInit_7.6.15.bts:system/etc/firmware/ti-connectivity/TIInit_7.6.15.bts
+
+# wl18xx firmware
+PRODUCT_COPY_FILES +=	\
+	device/fsl/common/wl18xx/wl18xx-conf.bin:system/etc/firmware/ti-connectivity/wl18xx-conf.bin \
+	device/fsl/common/wl18xx/wl18xx-fw-4.bin:system/etc/firmware/ti-connectivity/wl18xx-fw-4.bin \
+	device/fsl/common/wl18xx/TIInit_11.8.32.bts:system/etc/firmware/ti-connectivity/TIInit_11.8.32.bts
+
+$(call inherit-product-if-exists, device/ti/proprietary-open/wl12xx/wlan/wl12xx-wlan-fw-products.mk)
+$(call inherit-product-if-exists, device/ti/proprietary-open/wl12xx/wpan/wl12xx-wpan-fw-products.mk)
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    wifi.interface=wlan0 \
+    ro.disableWifiApFirmwareReload=true \
+	ro.telephony.default_network=0
+
+# wl18xx utils
+PRODUCT_PACKAGES += \
+	libwpa_client \
+	wifical.sh \
+	crda \
+	regulatory.bin \
+	wlconf \
+	struct.bin \
+	dictionary.txt \
+	wl18xx-conf-default.bin \
+	example.conf \
+	example.ini \
+	uim-sysfs \
+	iw
+
+# RIL
+PRODUCT_PACKAGES += \
+	chat \
+	ip-up \
+	ip-down
+
+# Sensors
+ PRODUCT_PACKAGES += \
+    sensors.iio
+    # stcald
+    # activity_recognition.iio
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.hardware.sensors=iio \
+    ro.iio.magn.quirks=no-trig
+    # ro.iio.accel.panel=5 \
+    # ro.iio.accel.rotation=4 \
 
 ifneq ($(BUILD_TARGET_FS),ubifs)
 PRODUCT_COPY_FILES += \
